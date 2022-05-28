@@ -149,7 +149,7 @@ steps:
     out: [finished]
 
   run_docker:
-    run: run_docker.cwl
+    run: steps/run_docker.cwl
     in:
       - id: docker_repository
         source: "#get_docker_submission/docker_repository"
@@ -216,7 +216,7 @@ steps:
     out: [finished]
 
   validate:
-    run: validate.cwl
+    run: steps/validate.cwl
     in:
       - id: input_file
         source: "#run_docker/predictions"
@@ -272,7 +272,7 @@ steps:
     out: [finished]
 
   score:
-    run: score.cwl
+    run: steps/score.cwl
     in:
       - id: input_file
         source: "#run_docker/predictions"
