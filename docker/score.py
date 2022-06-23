@@ -32,22 +32,22 @@ def get_args():
     parser.add_argument("-g", "--goldstandard_file",
                         type=str, required=True)
     parser.add_argument("-t", "--task", type=int, default=1)
-    parser.add_argument("-o", "--output", type=str)
+    parser.add_argument("-o", "--output", type=str, default="results.json")
     return parser.parse_args()
 
 
-def score(gold, pred, task_number):
+def score(gold, pred, col):
     """
     Calculate metrics for: AUC-ROC, AUC-PR, accuracy,
     sensitivity, specificity, and MCC (for funsies).
     """
-    roc = roc_auc_score(gold[task_number], pred[task_number])
-    pr = average_precision_score(gold[task_number], pred[task_number])
-    mat = confusion_matrix(gold[task_number], pred[task_number])
+    roc = roc_auc_score(gold[col], pred[col])
+    pr = average_precision_score(gold[col], pred[col])
+    mat = confusion_matrix(gold[col], pred[col])
     acc = (mat[0, 0] + mat[1, 1]) / sum(sum(mat))
     sens = mat[0, 0] / (mat[0, 0] + mat[0, 1])
     spec = mat[1, 1] / (mat[1, 0] + mat[1, 1])
-    mcc = matthews_corrcoef(gold[task_number], pred[task_number])
+    mcc = matthews_corrcoef(gold[col], pred[col])
 
     return {
         'AUC_ROC': roc, 'AUC_PR': pr,
@@ -62,7 +62,7 @@ def main():
 
     pred = pd.read_csv(args.predictions_file)
     gold = pd.read_csv(args.goldstandard_file)
-    scores = score(gold, pred, args.task)
+    scores = score(gold, pred, COLNAME[args.task])
 
     with open(args.output, "w") as out:
         res = {
