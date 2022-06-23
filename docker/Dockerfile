@@ -1,6 +1,6 @@
 FROM python:3.9.1-slim-buster
 
-RUN pip install pandas
+RUN pip install pandas sklearn
 
 COPY validate.py /usr/local/bin/.
 COPY score.py /usr/local/bin/.

@@ -13,6 +13,10 @@ import argparse
 import json
 
 import pandas as pd
+from sklearn.metrics import (roc_auc_score,
+                             average_precision_score,
+                             confusion_matrix,
+                             matthews_corrcoef)
 
 COLNAME = {
     1: 'was_preterm',
@@ -32,18 +36,38 @@ def get_args():
     return parser.parse_args()
 
 
+def score(gold, pred, task_number):
+    """
+    Calculate metrics for: AUC-ROC, AUC-PR, accuracy,
+    sensitivity, specificity, and MCC (for funsies).
+    """
+    roc = roc_auc_score(gold[task_number], pred[task_number])
+    pr = average_precision_score(gold[task_number], pred[task_number])
+    mat = confusion_matrix(gold[task_number], pred[task_number])
+    acc = (mat[0, 0] + mat[1, 1]) / sum(sum(mat))
+    sens = mat[0, 0] / (mat[0, 0] + mat[0, 1])
+    spec = mat[1, 1] / (mat[1, 0] + mat[1, 1])
+    mcc = matthews_corrcoef(gold[task_number], pred[task_number])
+
+    return {
+        'AUC_ROC': roc, 'AUC_PR': pr,
+        'accuracy': acc, 'sensitivity': sens,
+        'specificity': spec, 'MCC': mcc
+    }
+
+
 def main():
     """Main function."""
     args = get_args()
 
+    pred = pd.read_csv(args.predictions_file)
+    gold = pd.read_csv(args.goldstandard_file)
+    scores = score(gold, pred, args.task)
+
     with open(args.output, "w") as out:
         res = {
             "submission_status": "SCORED",
-            "roc_curve": 1,
-            "pr_curve": 1,
-            "accuracy": 1,
-            "sensitivity": 1,
-            "specificity": 1
+            **scores
         }
         out.write(json.dumps(res))
 
