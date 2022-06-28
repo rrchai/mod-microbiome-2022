@@ -50,7 +50,7 @@ def score(gold, pred, col):
     mcc = matthews_corrcoef(gold[col], pred[col])
 
     return {
-        'auc_roc': roc, 'aucpr': pr,
+        'auc_roc': roc, 'auprc': pr,
         'accuracy': acc, 'sensitivity': sens,
         'specificity': spec, 'mcc': mcc
     }
