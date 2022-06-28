@@ -272,7 +272,7 @@ steps:
       - id: goldstandard
         source: "#download_goldstandard/filepath"
       - id: task_number
-      default: 1
+        default: 1
       - id: check_validation_finished 
         source: "#check_status/finished"
     out:
@@ -287,9 +287,8 @@ steps:
         source: "#synapseConfig"
       - id: results
         source: "#score/results"
-      # OPTIONAL: add annotations to be withheld from participants to `[]`
-      # - id: private_annotations
-      #   default: []
+      - id: private_annotations
+        default: ["mcc"]
     out: []
 
   annotate_submission_with_output:
