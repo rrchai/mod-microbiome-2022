@@ -69,6 +69,7 @@ steps:
       - id: docker_digest
       - id: entity_id
       - id: entity_type
+      - id: evaluation_id
       - id: results
 
   get_docker_config:
@@ -208,6 +209,14 @@ steps:
         source: "#annotate_docker_validation_with_output/finished"
     out: [finished]
 
+  determine_question:
+    run: steps/determine_question.cwl
+    in:
+      - id: queue
+        source: "#get_docker_submission/evaluation_id"
+    out:
+      - id: task_number
+  
   validate:
     run: steps/validate.cwl
     in:
@@ -215,6 +224,8 @@ steps:
         source: "#run_docker/predictions"
       - id: goldstandard
         source: "#download_goldstandard/filepath"
+      - id: task_number
+        source: "#determine_question/task_number"
     out:
       - id: results
       - id: status
@@ -272,7 +283,7 @@ steps:
       - id: goldstandard
         source: "#download_goldstandard/filepath"
       - id: task_number
-        default: 1
+        source: "#determine_question/task_number"
       - id: check_validation_finished 
         source: "#check_status/finished"
     out:

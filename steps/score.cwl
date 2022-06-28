@@ -13,7 +13,7 @@ inputs:
 - id: goldstandard
   type: File
 - id: task_number
-  type: int
+  type: string
 - id: check_validation_finished
   type: boolean?
 
