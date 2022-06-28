@@ -31,7 +31,7 @@ def get_args():
                         type=str, required=True)
     parser.add_argument("-g", "--goldstandard_file",
                         type=str, required=True)
-    parser.add_argument("-t", "--task", type=int, default=1)
+    parser.add_argument("-t", "--task", type=str, default="1")
     parser.add_argument("-o", "--output", type=str, default="results.json")
     return parser.parse_args()
 
