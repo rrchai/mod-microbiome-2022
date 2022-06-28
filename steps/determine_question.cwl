@@ -12,7 +12,7 @@ inputs:
   type: string
 
 outputs:
-- id: question
+- id: task_number
   type: string
 
 expression: |
