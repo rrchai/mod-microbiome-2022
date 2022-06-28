@@ -19,8 +19,8 @@ from sklearn.metrics import (roc_auc_score,
                              matthews_corrcoef)
 
 COLNAME = {
-    1: 'was_preterm',
-    2: 'was_early_preterm'
+    "1": 'was_preterm',
+    "2": 'was_early_preterm'
 }
 
 
@@ -38,7 +38,7 @@ def get_args():
 
 def score(gold, pred, col):
     """
-    Calculate metrics for: AUC-ROC, AUC-PR, accuracy,
+    Calculate metrics for: AUC-ROC, AUCPR, accuracy,
     sensitivity, specificity, and MCC (for funsies).
     """
     roc = roc_auc_score(gold[col], pred[col])
@@ -50,9 +50,9 @@ def score(gold, pred, col):
     mcc = matthews_corrcoef(gold[col], pred[col])
 
     return {
-        'AUC_ROC': roc, 'AUC_PR': pr,
+        'auc_roc': roc, 'aucpr': pr,
         'accuracy': acc, 'sensitivity': sens,
-        'specificity': spec, 'MCC': mcc
+        'specificity': spec, 'mcc': mcc
     }
 
 
