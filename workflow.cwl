@@ -167,6 +167,8 @@ steps:
         default: true
       - id: input_dir
         valueFrom: "/home/ec2-user/training_data"
+      - id: name_prefix
+        valueFrom: "training"
       - id: docker_script
         default:
           class: File
@@ -344,6 +346,8 @@ steps:
         default: true
       - id: input_dir
         valueFrom: "/home/ec2-user/training_data"
+      - id: name_prefix
+        valueFrom: "testing"
       - id: docker_script
         default:
           class: File

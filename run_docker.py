@@ -94,6 +94,7 @@ def main(syn, args):
     docker_image = args.docker_repository + "@" + args.docker_digest
     output_dir = os.getcwd()
     input_dir = args.input_dir
+    container_name = f"{args.name_prefix}_{args.submissionid}"
 
     print("mounting volumes")
     mounted_volumes = {output_dir: '/output:rw',
@@ -111,7 +112,7 @@ def main(syn, args):
     container = None
     errors = None
     for cont in client.containers.list(all=True, ignore_removed=True):
-        if args.submissionid in cont.name:
+        if container_name in cont.name:
             # Must remove container if the container wasn't killed properly
             if cont.status == "exited":
                 cont.remove()
@@ -125,13 +126,13 @@ def main(syn, args):
             container = client.containers.run(docker_image,
                                               detach=True,
                                               volumes=volumes,
-                                              name=args.submissionid,
+                                              name=container_name,
                                               network_disabled=True,
                                               mem_limit='6g',
                                               stderr=True)
         except docker.errors.APIError as err:
             container = None
-            remove_docker_container(args.submissionid)
+            remove_docker_container(container_name)
             errors = str(err) + "\n"
         else:
             errors = ""
@@ -197,6 +198,7 @@ if __name__ == '__main__':
     parser.add_argument("--parentid", required=True,
                         help="Parent Id of submitter directory")
     parser.add_argument("--status", required=True, help="Docker image status")
+    parser.add_argument("-n", "--name_prefix", help="Container name prefix")
     args = parser.parse_args()
     syn = synapseclient.Synapse(configPath=args.synapse_config)
     syn.login()

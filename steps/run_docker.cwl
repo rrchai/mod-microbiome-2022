@@ -29,6 +29,8 @@ inputs:
     type: File
   - id: store
     type: boolean?
+  - id: name_prefix
+    type: string
 
 arguments: 
   - valueFrom: $(inputs.docker_script.path)
@@ -48,6 +50,8 @@ arguments:
     prefix: -c
   - valueFrom: $(inputs.input_dir)
     prefix: -i
+  - valueFrom: $(inputs.name_prefix)
+    prefix: -n
 
 requirements:
   - class: InitialWorkDirRequirement
