@@ -62,7 +62,6 @@ def tar(directory, tar_filename):
     """
     with tarfile.open(tar_filename, "w") as tar_o:
         tar_o.add(directory)
-    # TODO: Potentially add code to remove all files that were zipped.
 
 
 def untar(directory, tar_filename):
@@ -78,12 +77,10 @@ def untar(directory, tar_filename):
 
 def main(syn, args):
     """Run docker model"""
+
     if args.status == "INVALID":
         raise Exception("Docker image is invalid")
 
-    # The new toil version doesn't seem to pull the docker config file from
-    # .docker/config.json...
-    # client = docker.from_env()
     client = docker.DockerClient(base_url='unix://var/run/docker.sock')
     config = synapseclient.Synapse().getConfigFile(
         configPath=args.synapse_config
@@ -92,27 +89,18 @@ def main(syn, args):
     client.login(username=authen['username'],
                  password=authen['password'],
                  registry="https://docker.synapse.org")
-                 # dockercfg_path=".docker/config.json")
 
-    print(getpass.getuser())
-
-    # Add docker.config file
+    # Get Docker image to run and volumes to be mounted.
     docker_image = args.docker_repository + "@" + args.docker_digest
-
-    # These are the volumes that you want to mount onto your docker container
-    #output_dir = os.path.join(os.getcwd(), "output")
     output_dir = os.getcwd()
     input_dir = args.input_dir
 
     print("mounting volumes")
-    # These are the locations on the docker that you want your mounted
-    # volumes to be + permissions in docker (ro, rw)
-    # It has to be in this format '/output:rw'
     mounted_volumes = {output_dir: '/output:rw',
                        input_dir: '/input:ro'}
-    # All mounted volumes here in a list
+
+    # Format the mounted volumes so that Docker SDK can understand.
     all_volumes = [output_dir, input_dir]
-    # Mount volumes
     volumes = {}
     for vol in all_volumes:
         volumes[vol] = {'bind': mounted_volumes[vol].split(":")[0],
@@ -129,52 +117,55 @@ def main(syn, args):
                 cont.remove()
             else:
                 container = cont
-    # If the container doesn't exist, make sure to run the docker image
+
+    # Run the Docker container in detached mode.
     if container is None:
-        # Run as detached, logs will stream below
         print("running container")
         try:
             container = client.containers.run(docker_image,
-                                              detach=True, volumes=volumes,
+                                              detach=True,
+                                              volumes=volumes,
                                               name=args.submissionid,
                                               network_disabled=True,
-                                              mem_limit='6g', stderr=True)
+                                              mem_limit='6g',
+                                              stderr=True)
         except docker.errors.APIError as err:
+            container = None
             remove_docker_container(args.submissionid)
             errors = str(err) + "\n"
+        else:
+            errors = ""
 
+    # Create a logfile to catch stdout/stderr from the Docker runs.
     print("creating logfile")
-    # Create the logfile
     log_filename = args.submissionid + "_log.txt"
-    # Open log file first
     open(log_filename, 'w').close()
 
-    # If the container doesn't exist, there are no logs to write out and
-    # no container to remove
+    # While container is running, capture logs every 60s. Remove container
+    # when done.
     if container is not None:
-        # Check if container is still running
         while container in client.containers.list(ignore_removed=True):
             log_text = container.logs()
             create_log_file(log_filename, log_text=log_text)
             store_log_file(syn, log_filename, args.parentid, store=args.store)
             time.sleep(60)
-        # Must run again to make sure all the logs are captured
+
+        # Must run again to make sure all the logs are captured.
         log_text = container.logs()
         create_log_file(log_filename, log_text=log_text)
         store_log_file(syn, log_filename, args.parentid, store=args.store)
-        # Remove container and image after being done
+
         container.remove()
 
     statinfo = os.stat(log_filename)
-
-    if statinfo.st_size == 0:
+    if statinfo.st_size == 0 and errors:
         create_log_file(log_filename, log_text=errors)
         store_log_file(syn, log_filename, args.parentid, store=args.store)
 
-    print("finished training")
-    # Try to remove the image
+    print("finished running Docker model")
     remove_docker_image(docker_image)
 
+    # Check for prediction files once the Docker run is complete.
     output_folder = os.listdir(output_dir)
     if not output_folder:
         raise Exception("No 'predictions.csv' file written to /output, "
@@ -187,9 +178,6 @@ def main(syn, args):
         else:
             raise Exception("No 'predictions.csv' file written to /output, "
                             "please check inference docker")
-    # CWL has a limit of the array of files it can accept in a folder
-    # therefore creating a tarball is sometimes necessary
-    # tar(output_dir, 'outputs.tar.gz')
 
 
 if __name__ == '__main__':
