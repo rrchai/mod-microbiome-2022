@@ -13,8 +13,8 @@ import json
 import pandas as pd
 
 COLNAMES = {
-    "1": ['participant', 'was_preterm', 'was_preterm_probability'],
-    "2": ['participant', 'was_early_preterm', 'was_early_preterm_probability']
+    "1": ['participant', 'was_preterm', 'probability'],
+    "2": ['participant', 'was_early_preterm', 'probability']
 }
 
 
