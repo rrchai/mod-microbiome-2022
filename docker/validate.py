@@ -54,7 +54,7 @@ def check_dups(pred):
 
 def check_missing(gold, pred):
     """Check for missing participant IDs."""
-    pred.set_index('participant', inplace=True)
+    pred = pred.set_index('participant')
     missing_rows = gold.index.difference(pred.index)
     if missing_rows.any():
         return (
@@ -64,10 +64,10 @@ def check_missing(gold, pred):
     return ""
 
 
-def check_values(pred):
+def check_values(pred, task):
     """Check that predictions column is binary."""
-    if not pred.iloc[:, 0].isin([0, 1]).all():
-        return f"'{pred.columns[0]}' column should only contain 0 and 1."
+    if not pred.loc[:, pred.columns.str.contains('preterm')].isin([0, 1]).all().bool():
+        return f"'{COLNAMES.get(task)[1]}' column should only contain 0 and 1."
     return ""
 
 
@@ -83,7 +83,7 @@ def validate(gold_file, pred_file, task_number):
     errors.append(check_colnames(pred, task_number))
     errors.append(check_dups(pred))
     errors.append(check_missing(gold, pred))
-    errors.append(check_values(pred))
+    errors.append(check_values(pred, task_number))
     return errors
 
 
@@ -97,8 +97,8 @@ def main():
         task_number=args.task
     )
 
-    status = "INVALID" if invalid_reasons else "VALIDATED"
     invalid_reasons = "\n".join(filter(None, invalid_reasons))
+    status = "INVALID" if invalid_reasons else "VALIDATED"
 
     # truncate validation errors if >500 (character limit for sending email)
     if len(invalid_reasons) > 500:
