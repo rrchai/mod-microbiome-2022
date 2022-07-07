@@ -41,8 +41,8 @@ def score(gold, pred, col):
     Calculate metrics for: AUC-ROC, AUCPR, accuracy,
     sensitivity, specificity, and MCC (for funsies).
     """
-    roc = roc_auc_score(gold['probability'], pred['probability'])
-    pr = average_precision_score(gold['probability'], pred['probability'])
+    roc = roc_auc_score(gold[col], pred['probability'])
+    pr = average_precision_score(gold[col], pred['probability'])
     mat = confusion_matrix(gold[col], pred[col])
     acc = (mat[0, 0] + mat[1, 1]) / sum(sum(mat))
     sens = mat[0, 0] / (mat[0, 0] + mat[0, 1])
