@@ -12,15 +12,15 @@ inputs:
   type: string
 
 outputs:
-- id: id
+- id: synid
   type: string
 
 expression: |
 
   ${
     if(inputs.task_number == "1") {
-      return {id: "syn32638781"};
+      return {synid: "syn32638781"};
     } else {
-      return {id: "syn32638782"};
+      return {synid: "syn32638782"};
     }
   }

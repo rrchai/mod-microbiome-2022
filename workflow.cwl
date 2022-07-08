@@ -217,13 +217,13 @@ steps:
       - id: task_number
         source: "#determine_question#task_number"
     out:
-      - id: id
+      - id: synid
 
   download_goldstandard:
     run: https://raw.githubusercontent.com/Sage-Bionetworks-Workflows/cwl-tool-synapseclient/v1.4/cwl/synapse-get-tool.cwl
     in:
       - id: synapseid
-        source: "#get_goldstandard_id/id"
+        source: "#get_goldstandard_id/synid"
       - id: synapse_config
         source: "#synapseConfig"
     out:
