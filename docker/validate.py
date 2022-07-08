@@ -95,9 +95,7 @@ def check_binary_values(pred):
 def check_prob_values(pred):
     """Check that probabilities are between [0, 1]."""
     if (pred.probability < 0).any() or (pred.probability > 1).any():
-        return (
-            "'probability' column should be between [0, 1] inclusive."
-        )
+        return "'probability' column should be between [0, 1] inclusive."
     return ""
 
 
