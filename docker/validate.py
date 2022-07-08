@@ -39,17 +39,6 @@ def get_args():
     return parser.parse_args()
 
 
-def check_colnames(pred, task):
-    """Check for expected columns."""
-    expected_columns = COLNAMES[task]
-    if set(pred.columns) != set(expected_columns):
-        return (
-            f"Invalid columns: {pred.columns.to_list()}. "
-            f"Expecting: {expected_columns}"
-        )
-    return ""
-
-
 def check_dups(pred):
     """Check for duplicate participant IDs."""
     duplicates = pred.duplicated(subset=['participant'])
