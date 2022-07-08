@@ -11,10 +11,19 @@ import argparse
 import json
 
 import pandas as pd
+import numpy as np
 
-COLNAMES = {
-    "1": ['participant', 'was_preterm', 'probability'],
-    "2": ['participant', 'was_early_preterm', 'probability']
+COLS = {
+    "1": {
+        'participant': str,
+        'was_preterm': np.int8,
+        'probability': np.float64
+    },
+    "2": {
+        'participant': str,
+        'was_early_preterm': np.int8,
+        'probability': np.float64
+    }
 }
 
 
@@ -76,12 +85,17 @@ def validate(gold_file, pred_file, task_number):
     errors = []
 
     gold = pd.read_csv(gold_file,
-                       usecols=COLNAMES[task_number],
                        index_col="participant")
-    pred = pd.read_csv(pred_file)
-
-    errors.append(check_colnames(pred, task_number))
-    errors.append(check_dups(pred))
+    try:
+        pred = pd.read_csv(pred_file,
+                           usecols=COLS[task_number],
+                           dtype=COLS[task_number],
+                           float_precision='round_trip')
+    except ValueError as err:
+        errors.append(
+            f"Invalid column names and/or types: {str(err)}. "
+            f"Expecting: {str(COLS[task_number])}."
+        )
     errors.append(check_missing(gold, pred))
     errors.append(check_values(pred, task_number))
     return errors
