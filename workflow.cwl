@@ -215,7 +215,7 @@ steps:
     run: steps/get_goldstandard_id.cwl
     in:
       - id: task_number
-        source: "#determine_question#task_number"
+        source: "#determine_question/task_number"
     out:
       - id: synid
 
