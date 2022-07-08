@@ -50,22 +50,54 @@ def check_dups(pred):
     return ""
 
 
-def check_missing(gold, pred):
+def check_missing_ids(gold, pred):
     """Check for missing participant IDs."""
     pred = pred.set_index('participant')
-    missing_rows = gold.index.difference(pred.index)
-    if missing_rows.any():
+    missing_ids = gold.index.difference(pred.index)
+    if missing_ids.any():
         return (
-            f"Found {missing_rows.shape[0]} missing participant ID(s): "
-            f"{missing_rows.to_list()}"
+            f"Found {missing_ids.shape[0]} missing participant ID(s): "
+            f"{missing_ids.to_list()}"
         )
     return ""
 
 
-def check_values(pred, task):
-    """Check that predictions column is binary."""
-    if not pred.loc[:, pred.columns.str.contains('preterm')].isin([0, 1]).all().bool():
-        return f"'{COLNAMES.get(task)[1]}' column should only contain 0 and 1."
+def check_unknown_ids(gold, pred):
+    """Check for unknown participant IDs."""
+    pred = pred.set_index('participant')
+    unknown_ids = pred.index.difference(gold.index)
+    if unknown_ids.any():
+        return (
+            f"Found {unknown_ids.shape[0]} unknown participant ID(s): "
+            f"{unknown_ids.to_list()}"
+        )
+    return ""
+
+
+def check_nan_values(pred):
+    """Check for NAN predictions."""
+    missing_probs = pred.probability.isna().sum()
+    if missing_probs:
+        return (
+            f"'probability' column contains {missing_probs} NaN value(s)."
+        )
+    return ""
+
+
+def check_binary_values(pred):
+    """Check that binary label are only 0 and 1."""
+    colname = pred.filter(regex='preterm').columns[0]
+    if not pred.loc[:, colname].isin([0, 1]).all():
+        return f"'{colname}' column should only contain 0 and 1."
+    return ""
+
+
+def check_prob_values(pred):
+    """Check that probabilities are between [0, 1]."""
+    if (pred.probability < 0).any() or (pred.probability > 1).any():
+        return (
+            "'probability' column should be between [0, 1] inclusive."
+        )
     return ""
 
 
@@ -85,8 +117,13 @@ def validate(gold_file, pred_file, task_number):
             f"Invalid column names and/or types: {str(err)}. "
             f"Expecting: {str(COLS[task_number])}."
         )
-    errors.append(check_missing(gold, pred))
-    errors.append(check_values(pred, task_number))
+    else:
+        errors.append(check_dups(pred))
+        errors.append(check_missing_ids(gold, pred))
+        errors.append(check_unknown_ids(gold, pred))
+        errors.append(check_nan_values(pred))
+        errors.append(check_binary_values(pred))
+        errors.append(check_prob_values(pred))
     return errors
 
 
