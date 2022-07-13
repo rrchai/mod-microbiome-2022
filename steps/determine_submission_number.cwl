@@ -31,10 +31,10 @@ requirements:
       query = (f"SELECT count(*) FROM {args.submission_view} "
                f"WHERE evaluationid = {args.evaluation_id} "
                f"AND submitterid = {submitter} AND status = 'ACCEPTED'")
-      submissions_count = next(syn.tableQuery(query, resultsAs="rowset"))
+      submissions_count = len(syn.tableQuery(query, resultsAs="rowset"))
 
       with open("output.txt", "w") as o:
-        o.write(str(submissions_count.get("values")[0]))
+        o.write(str(submissions_count))
 
 inputs:
 - id: submission_id
@@ -68,4 +68,4 @@ baseCommand:
 
 hints:
   DockerRequirement:
-    dockerPull: sagebionetworks/synapsepythonclient:v2.2.2
+    dockerPull: sagebionetworks/synapsepythonclient:v2.6.0
