@@ -221,7 +221,7 @@ steps:
       - id: queue
         source: "#get_docker_submission/evaluation_id"
       - id: submission_view
-        valueFrom: "syn22340111"
+        valueFrom: "syn31106867"
     out:
       - id: submission_number
 
