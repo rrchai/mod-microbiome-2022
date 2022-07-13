@@ -211,6 +211,20 @@ steps:
     out:
       - id: task_number
 
+  determine_submission_number:
+    run: steps/determine_submission_number.cwl
+    in:
+      - id: submission_id
+        source: "#submissionId"
+      - id: synapse_config
+        source: "#synapseConfig"
+      - id: queue
+        source: "#get_docker_submission/evaluation_id"
+      - id: submission_view
+        valueFrom: "syn22340111"
+    out:
+      - id: submission_number
+
   get_goldstandard_id:
     run: steps/get_goldstandard_id.cwl
     in:
@@ -296,6 +310,8 @@ steps:
         source: "#download_goldstandard/filepath"
       - id: task_number
         source: "#determine_question/task_number"
+      - id: submission_number
+        source: "#determine_submission_number/submission_number"
       - id: check_validation_finished 
         source: "#check_status/finished"
     out:
