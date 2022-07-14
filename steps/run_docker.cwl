@@ -23,14 +23,12 @@ inputs:
     type: string
   - id: synapse_config
     type: File
-  - id: input_dir
+  - id: task_number
     type: string
   - id: docker_script
     type: File
   - id: store
     type: boolean?
-  - id: name_prefix
-    type: string
 
 arguments: 
   - valueFrom: $(inputs.docker_script.path)
@@ -48,10 +46,8 @@ arguments:
     prefix: --parentid
   - valueFrom: $(inputs.synapse_config.path)
     prefix: -c
-  - valueFrom: $(inputs.input_dir)
-    prefix: -i
-  - valueFrom: $(inputs.name_prefix)
-    prefix: -n
+  - valueFrom: $(inputs.task_number)
+    prefix: -t
 
 requirements:
   - class: InitialWorkDirRequirement

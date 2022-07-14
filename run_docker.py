@@ -1,13 +1,12 @@
 """Run training synthetic docker models"""
 from __future__ import print_function
 import argparse
-import getpass
 import os
 import tarfile
 import time
 
-import docker
 import synapseclient
+import docker
 
 
 def create_log_file(log_filename, log_text=None):
@@ -93,8 +92,11 @@ def main(syn, args):
     # Get Docker image to run and volumes to be mounted.
     docker_image = args.docker_repository + "@" + args.docker_digest
     output_dir = os.getcwd()
-    input_dir = args.input_dir
-    container_name = f"{args.name_prefix}_{args.submissionid}"
+    if args.task_number == "1":
+        input_dir = "/home/ec2-user/task1_input"
+    else:
+        input_dir = "/home/ec2-user/task2_input"
+    container_name = f"{args.submissionid}_task{args.task_number}"
 
     print("mounting volumes")
     mounted_volumes = {output_dir: '/output:rw',
@@ -173,12 +175,8 @@ def main(syn, args):
                         "please check inference docker")
     elif "predictions.csv" not in output_folder:
 
-        # TODO: remove once live
-        if "participant_predictions.csv" in output_folder:
-            os.rename("participant_predictions.csv", "predictions.csv")
-        else:
-            raise Exception("No 'predictions.csv' file written to /output, "
-                            "please check inference docker")
+        raise Exception("No 'predictions.csv' file written to /output, "
+                        "please check inference docker")
 
 
 if __name__ == '__main__':
@@ -189,8 +187,8 @@ if __name__ == '__main__':
                         help="Docker Repository")
     parser.add_argument("-d", "--docker_digest", required=True,
                         help="Docker Digest")
-    parser.add_argument("-i", "--input_dir", required=True,
-                        help="Input Directory")
+    parser.add_argument("-t", "--task_number", choices=["1", "2"],
+                        required=True, help="Task number of submission")
     parser.add_argument("-c", "--synapse_config", required=True,
                         help="credentials file")
     parser.add_argument("--store", action='store_true',
@@ -198,7 +196,6 @@ if __name__ == '__main__':
     parser.add_argument("--parentid", required=True,
                         help="Parent Id of submitter directory")
     parser.add_argument("--status", required=True, help="Docker image status")
-    parser.add_argument("-n", "--name_prefix", help="Container name prefix")
     args = parser.parse_args()
     syn = synapseclient.Synapse(configPath=args.synapse_config)
     syn.login()

@@ -135,6 +135,14 @@ steps:
       - id: previous_email_finished
         source: "#email_docker_validation/finished"
     out: [finished]
+
+  determine_question:
+    run: steps/determine_question.cwl
+    in:
+      - id: queue
+        source: "#get_docker_submission/evaluation_id"
+    out:
+      - id: task_number
  
   run_docker:
     run: steps/run_docker.cwl
@@ -157,10 +165,8 @@ steps:
         source: "#synapseConfig"
       - id: store
         default: true
-      - id: input_dir
-        valueFrom: "/home/ec2-user/training_data"
-      - id: name_prefix
-        valueFrom: "testing"
+      - id: task_number
+        source: "#determine_question/task_number"
       - id: docker_script
         default:
           class: File
@@ -202,14 +208,6 @@ steps:
       - id: previous_annotation_finished
         source: "#annotate_docker_validation_with_output/finished"
     out: [finished]
-
-  determine_question:
-    run: steps/determine_question.cwl
-    in:
-      - id: queue
-        source: "#get_docker_submission/evaluation_id"
-    out:
-      - id: task_number
 
   determine_submission_number:
     run: steps/determine_submission_number.cwl
