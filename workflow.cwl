@@ -164,7 +164,7 @@ steps:
       - id: synapse_config
         source: "#synapseConfig"
       - id: store
-        default: true
+        default: false
       - id: task_number
         source: "#determine_question/task_number"
       - id: docker_script
@@ -209,19 +209,19 @@ steps:
         source: "#annotate_docker_validation_with_output/finished"
     out: [finished]
 
-  determine_submission_number:
-    run: steps/determine_submission_number.cwl
-    in:
-      - id: submission_id
-        source: "#submissionId"
-      - id: synapse_config
-        source: "#synapseConfig"
-      - id: queue
-        source: "#get_docker_submission/evaluation_id"
-      - id: submission_view
-        valueFrom: "syn31106867"
-    out:
-      - id: submission_number
+  # determine_submission_number:
+  #   run: steps/determine_submission_number.cwl
+  #   in:
+  #     - id: submission_id
+  #       source: "#submissionId"
+  #     - id: synapse_config
+  #       source: "#synapseConfig"
+  #     - id: queue
+  #       source: "#get_docker_submission/evaluation_id"
+  #     - id: submission_view
+  #       valueFrom: "syn31106867"
+  #   out:
+  #     - id: submission_number
 
   get_goldstandard_id:
     run: steps/get_goldstandard_id.cwl
@@ -308,8 +308,8 @@ steps:
         source: "#download_goldstandard/filepath"
       - id: task_number
         source: "#determine_question/task_number"
-      - id: submission_number
-        source: "#determine_submission_number/submission_number"
+      # - id: submission_number
+      #   source: "#determine_submission_number/submission_number"
       - id: check_validation_finished 
         source: "#check_status/finished"
     out:
