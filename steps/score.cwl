@@ -39,8 +39,8 @@ arguments:
   valueFrom: $(inputs.goldstandard.path)
 - prefix: -t
   valueFrom: $(inputs.task_number)
-- prefix: -s
-  valueFrom: $(inputs.submission_number)
+# - prefix: -s
+#   valueFrom: $(inputs.submission_number)
 - prefix: -o
   valueFrom: results.json
 
