@@ -45,23 +45,23 @@ BS_n <- 100
 bs_indices <- matrix(1:nrow(gold), nrow(gold), BS_n) %>%
     apply(2, sample, replace=T)
 
-boot_auc_roc <- apply(bs_indices[1:40,], 2, function(ind) {
+boot_auc_roc <- apply(bs_indices[1:37,], 2, function(ind) {
     tmp <- pred[match(gold$participant, pred$participant), ]
     roc_auc_vec(gold[[colname]][ind], tmp$probability[ind])
 }) %>% median()
-boot_aupr <- apply(bs_indices[1:40,], 2, function(ind) {
+boot_aupr <- apply(bs_indices[1:37,], 2, function(ind) {
     tmp <- pred[match(gold$participant, pred$participant), ]
     pr_auc_vec(gold[[colname]][ind], tmp$probability[ind])
 }) %>% median()
-boot_acc <- apply(bs_indices[1:40,], 2, function(ind) {
+boot_acc <- apply(bs_indices[1:37,], 2, function(ind) {
     tmp <- pred[match(gold$participant, pred$participant), ]
     accuracy_vec(gold[[colname]][ind], tmp[[colname]][ind])
 }) %>% median()
-boot_sens <- apply(bs_indices[1:40,], 2, function(ind) {
+boot_sens <- apply(bs_indices[1:37,], 2, function(ind) {
     tmp <- pred[match(gold$participant, pred$participant), ]
     sens_vec(gold[[colname]][ind], tmp[[colname]][ind])
 }) %>% median()
-boot_spec <- apply(bs_indices[1:40,], 2, function(ind) {
+boot_spec <- apply(bs_indices[1:37,], 2, function(ind) {
     tmp <- pred[match(gold$participant, pred$participant), ]
     spec_vec(gold[[colname]][ind], tmp[[colname]][ind])
 }) %>% median()
