@@ -31,7 +31,7 @@ outputs:
     outputEval: $(JSON.parse(self[0].contents)['submission_status'])
     loadContents: true
 
-baseCommand: score.py
+baseCommand: score.R
 arguments:
 - prefix: -p
   valueFrom: $(inputs.input_file.path)
@@ -46,4 +46,4 @@ arguments:
 
 hints:
   DockerRequirement:
-    dockerPull: docker.synapse.org/syn26133771/evaluation:v1
+    dockerPull: docker.synapse.org/syn26133771/evaluation:v2
