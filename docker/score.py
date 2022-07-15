@@ -13,7 +13,6 @@ import argparse
 import json
 
 import pandas as pd
-import numpy as np
 from sklearn.metrics import (roc_auc_score,
                              average_precision_score,
                              confusion_matrix,
@@ -44,10 +43,10 @@ def score(gold, pred, col):
     """
     roc = roc_auc_score(gold[col], pred['probability'])
     pr = average_precision_score(gold[col], pred['probability'])
-    mat = confusion_matrix(gold[col], pred[col])
-    acc = (mat[0, 0] + mat[1, 1]) / np.sum(mat)
-    sens = mat[0, 0] / (mat[0, 0] + mat[0, 1])
-    spec = mat[1, 1] / (mat[1, 0] + mat[1, 1])
+    tn, fp, fn, tp = confusion_matrix(gold[col], pred[col]).ravel()
+    acc = (tp + tn) / (tp + fp + fn + tn)
+    sens = tp / (tp + fn)
+    spec = tn / (tn + fp)
     mcc = matthews_corrcoef(gold[col], pred[col])
 
     return {
