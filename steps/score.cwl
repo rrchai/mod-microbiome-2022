@@ -30,6 +30,10 @@ outputs:
     glob: results.json
     outputEval: $(JSON.parse(self[0].contents)['submission_status'])
     loadContents: true
+- id: true_scores
+  type: File
+  outputBinding:
+    glob: true_results.json
 
 baseCommand: score.R
 arguments:

@@ -27,13 +27,16 @@ gold[[colname]] <- factor(gold[[colname]], levels=c(1,0))
 pred[[colname]] <- factor(pred[[colname]], levels=c(1,0))
 
 # Calculate the true scores first.
-# results_list <- list()
-# result_list[['auc_roc']] <- roc_auc_vec(gold[[colname]], pred$probability)
-# result_list[['auprc']] <- pr_auc_vec(gold[[colname]], pred$probability)
-# result_list[['accuracy']] <- accuracy_vec(gold[[colname], pred[[colname]]])
-# result_list[['sensitivity']] <- sens_vec(gold[[colname]], pred[[colname]])
-# result_list[['specificity']] <- spec_vec(gold[[colname]], pred[[colname]])
-# result_list[['mcc']] <- mcc_vec(gold[[colname]], pred[[colname]])
+true_scores <- list(
+    "auc_roc" = roc_auc_vec(gold[[colname]], pred$probability),
+    "auprc" = pr_auc_vec(gold[[colname]], pred$probability),
+    "accuracy" = accuracy_vec(gold[[colname]], pred[[colname]]),
+    "sensitivity" = sens_vec(gold[[colname]], pred[[colname]]),
+    "specificity" = spec_vec(gold[[colname]], pred[[colname]]),
+    "mcc" = mcc_vec(gold[[colname]], pred[[colname]])
+)
+export_json <- toJSON(true_scores, auto_unbox = TRUE, pretty=T)
+write(export_json, "true_results.json")
 
 # Calculate bootstrapped scores, using a seed based on the current
 # number of valid submissions + 1.
@@ -63,7 +66,7 @@ boot_spec <- apply(bs_indices, 2, function(ind) {
     spec_vec(gold[[colname]][ind], tmp[[colname]][ind])
 }) %>% median()
 
-results_list <- list(
+bs_scores <- list(
     "boot_auc_roc" = boot_auc_roc,
     "boot_auprc" = boot_aupr,
     "boot_accuracy" = boot_acc,
@@ -71,7 +74,6 @@ results_list <- list(
     "boot_specificity" = boot_spec,
     "submission_status" = "SCORED"
 )
-
-export_json <- toJSON(results_list, auto_unbox = TRUE, pretty=T)
+export_json <- toJSON(bs_scores, auto_unbox = TRUE, pretty=T)
 write(export_json, args$output)
 

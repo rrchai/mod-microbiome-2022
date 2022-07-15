@@ -309,6 +309,7 @@ steps:
         source: "#check_status/finished"
     out:
       - id: results
+      - id: true_scores
       
   email_score:
     run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.1/cwl/score_email.cwl
@@ -338,5 +339,22 @@ steps:
         source: "#synapseConfig"
       - id: previous_annotation_finished
         source: "#annotate_validation_with_output/finished"
+    out: [finished]
+
+  annotate_submission_with_hidden_output:
+    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.1/cwl/annotate_submission.cwl
+    in:
+      - id: submissionid
+        source: "#submissionId"
+      - id: annotation_values
+        source: "#score/true_scores"
+      - id: to_public
+        default: false
+      - id: force
+        default: true
+      - id: synapse_config
+        source: "#synapseConfig"
+      - id: previous_annotation_finished
+        source: "#annotate_submission_with_output/finished"
     out: [finished]
  
