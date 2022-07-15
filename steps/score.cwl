@@ -14,8 +14,8 @@ inputs:
   type: File
 - id: task_number
   type: string
-- id: submission_number
-  type: int
+# - id: submission_number
+#   type: int
 - id: check_validation_finished
   type: boolean?
 
