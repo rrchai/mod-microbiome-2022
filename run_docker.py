@@ -76,10 +76,6 @@ def untar(directory, tar_filename):
 
 def main(syn, args):
     """Run docker model"""
-
-    if args.status == "INVALID":
-        raise Exception("Docker image is invalid")
-
     client = docker.DockerClient(base_url='unix://var/run/docker.sock')
     config = synapseclient.Synapse().getConfigFile(
         configPath=args.synapse_config
