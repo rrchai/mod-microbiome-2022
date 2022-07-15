@@ -27,14 +27,14 @@ pred[[colname]] <- factor(pred[[colname]], levels=c(1,0))
 
 # Calculate the true scores first.
 result_list = list()
-result_list[['auc_roc']] <- roc_auc_vec(gold[[colname]], pred$probability)
-result_list[['auprc']] <- pr_auc_vec(gold[[colname]], pred$probability)
-result_list[['accuracy']] <- accuracy_vec(gold[[colname], pred[[colname]]])
-result_list[['sensitivity']] <- sens_vec(gold[[colname]], pred[[colname]])
-result_list[['specificity']] <- spec_vec(gold[[colname]], pred[[colname]])
-result_list[['mcc']] <- mcc_vec(gold[[colname]], pred[[colname]])
+# result_list[['auc_roc']] <- roc_auc_vec(gold[[colname]], pred$probability)
+# result_list[['auprc']] <- pr_auc_vec(gold[[colname]], pred$probability)
+# result_list[['accuracy']] <- accuracy_vec(gold[[colname], pred[[colname]]])
+# result_list[['sensitivity']] <- sens_vec(gold[[colname]], pred[[colname]])
+# result_list[['specificity']] <- spec_vec(gold[[colname]], pred[[colname]])
+# result_list[['mcc']] <- mcc_vec(gold[[colname]], pred[[colname]])
 
-# Next, calculate bootstrapped scores, using a seed based on the current
+# Calculate bootstrapped scores, using a seed based on the current
 # number of valid submissions + 1.
 set.seed(args$submission_number + 1)
 BS_n <- 1000
