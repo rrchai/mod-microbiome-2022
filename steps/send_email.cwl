@@ -43,7 +43,7 @@ requirements:
           subject = "Submission to '%s' scored!" % evaluation.name
           for annot in args.private_annotations:
             del annots[annot]
-        message = ["Hello %s,\n\n" % name,
+          message = ["Hello %s,\n\n" % name,
                     "Your submission (id: %s) has been scored and below are your bootstrapped (N=1000) scores:\n\n" % sub.id,
                     "\n".join([i + " : " + str(annots[i]) for i in annots]),
                     "\nYour true scores will be announced at a later time."
