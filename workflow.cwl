@@ -5,8 +5,8 @@ class: Workflow
 label: UCSF Microbiome Challenge Evaluation
 doc: |
   This workflow will run and evaluate a Docker submission to the MOD - Preterm
-  Birth Prediction Microbiome Challenge (syn26133771). Metrics returned are ROC,
-  PR, Accuracy, Sensitivity, Specificity.
+  Birth Prediction Microbiome Challenge (syn26133771). Metrics returned are:
+  AUC-ROC, AUPR, Accuracy, Sensitivity, Specificity.
 
 requirements:
 - class: StepInputExpressionRequirement
@@ -84,12 +84,10 @@ steps:
       - id: docker_authentication
 
   validate_docker:
-    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.1/cwl/validate_docker.cwl
+    run: steps/check_submission.cwl
     in:
-      - id: submissionid
-        source: "#submissionId"
-      - id: synapse_config
-        source: "#synapseConfig"
+      - id: entity_type
+        source: "#get_docker_submission/entity_type"
     out:
       - id: results
       - id: status
@@ -157,8 +155,6 @@ steps:
         source: "#get_docker_config/docker_registry"
       - id: docker_authentication
         source: "#get_docker_config/docker_authentication"
-      - id: status
-        source: "#validate_docker/status"
       - id: parentid
         source: "#submitterUploadSynId"
       - id: synapse_config
