@@ -44,9 +44,9 @@ requirements:
           for annot in args.private_annotations:
             del annots[annot]
           message = ["Hello %s,\n\n" % name,
-                    "Your submission (id: %s) has been scored and below are your bootstrapped scores (N=100):\n\n" % sub.id,
-                    "\n".join(["  " + i + ": " + str(annots[i]) for i in annots]),
-                    "\n\nYour true scores will be announced at a later time."
+                    "Your submission (ID: %s) has been scored!  Below are the point estimates based on 100 iterations on a small subset of the test set:\n\n" % sub.id,
+                    "\n".join(["\t" + i + ": " + str(annots[i]) for i in annots]),
+                    "\n\nYour scores based on the entire test set will be announced at a later time."
                     "\n\nSincerely,\nChallenge Administrator"]
           syn.sendMessage(
               userIds=[participantid],
