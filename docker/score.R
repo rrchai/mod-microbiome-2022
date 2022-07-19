@@ -47,24 +47,24 @@ bs_indices <- matrix(1:nrow(gold), nrow(gold), BS_n) %>%
 
 boot_auc_roc <- apply(bs_indices[1:37,], 2, function(ind) {
     tmp <- pred[match(gold$participant, pred$participant), ]
-    roc_auc_vec(gold[[colname]][ind], tmp$probability[ind])
-}) %>% median()
+    suppressWarnings(roc_auc_vec(gold[[colname]][ind], tmp$probability[ind]))
+}) %>% median(na.rm = TRUE)
 boot_aupr <- apply(bs_indices[1:37,], 2, function(ind) {
     tmp <- pred[match(gold$participant, pred$participant), ]
-    pr_auc_vec(gold[[colname]][ind], tmp$probability[ind])
-}) %>% median()
+    suppressWarnings(pr_auc_vec(gold[[colname]][ind], tmp$probability[ind]))
+}) %>% median(na.rm = TRUE)
 boot_acc <- apply(bs_indices[1:37,], 2, function(ind) {
     tmp <- pred[match(gold$participant, pred$participant), ]
-    accuracy_vec(gold[[colname]][ind], tmp[[colname]][ind])
-}) %>% median()
+    suppressWarnings(accuracy_vec(gold[[colname]][ind], tmp[[colname]][ind]))
+}) %>% median(na.rm = TRUE)
 boot_sens <- apply(bs_indices[1:37,], 2, function(ind) {
     tmp <- pred[match(gold$participant, pred$participant), ]
-    sens_vec(gold[[colname]][ind], tmp[[colname]][ind])
-}) %>% median()
+    suppressWarnings(sens_vec(gold[[colname]][ind], tmp[[colname]][ind]))
+}) %>% median(na.rm = TRUE)
 boot_spec <- apply(bs_indices[1:37,], 2, function(ind) {
     tmp <- pred[match(gold$participant, pred$participant), ]
-    spec_vec(gold[[colname]][ind], tmp[[colname]][ind])
-}) %>% median()
+    suppressWarnings(spec_vec(gold[[colname]][ind], tmp[[colname]][ind]))
+}) %>% median(na.rm = TRUE)
 
 bs_scores <- list(
     "boot_auc_roc" = boot_auc_roc,
