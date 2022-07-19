@@ -14,8 +14,6 @@ inputs:
   type: File
 - id: task_number
   type: string
-- id: submission_number
-  type: int
 - id: check_validation_finished
   type: boolean?
 
@@ -43,8 +41,6 @@ arguments:
   valueFrom: $(inputs.goldstandard.path)
 - prefix: -t
   valueFrom: $(inputs.task_number)
-- prefix: -s
-  valueFrom: $(inputs.submission_number)
 - prefix: -o
   valueFrom: results.json
 
