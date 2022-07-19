@@ -10,7 +10,6 @@ option_list <- list(
     make_option(c('-g', '--goldstandard_file'),  type = "character"),
     make_option(c('-o', '--output'),  type = "character", default="results.json"),
     make_option(c('-t', '--task'),  type = "character", default="1"),
-    make_option(c('-s', '--submission_number'), type = "integer")
 )
 args <- parse_args(OptionParser(option_list=option_list))
 
@@ -38,9 +37,8 @@ true_scores <- list(
 export_json <- toJSON(true_scores, auto_unbox = TRUE, pretty=T)
 write(export_json, "true_results.json")
 
-# Calculate bootstrapped scores, using a seed based on the current
-# number of valid submissions + 1.
-set.seed(args$submission_number + 1)
+# Calculate bootstrapped scores, using a fixed seed value.
+set.seed(7192022)
 BS_n <- 100
 bs_indices <- matrix(1:nrow(gold), nrow(gold), BS_n) %>%
     apply(2, sample, replace=T)
