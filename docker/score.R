@@ -46,30 +46,34 @@ bs_indices <- matrix(1:nrow(gold), nrow(gold), BS_n) %>%
 boot_auc_roc <- apply(bs_indices[1:37,], 2, function(ind) {
     tmp <- pred[match(gold$participant, pred$participant), ]
     suppressWarnings(roc_auc_vec(gold[[colname]][ind], tmp$probability[ind]))
-}) %>% median(na.rm = TRUE)
+})
 boot_aupr <- apply(bs_indices[1:37,], 2, function(ind) {
     tmp <- pred[match(gold$participant, pred$participant), ]
     suppressWarnings(pr_auc_vec(gold[[colname]][ind], tmp$probability[ind]))
-}) %>% median(na.rm = TRUE)
-boot_acc <- apply(bs_indices[1:37,], 2, function(ind) {
+})
+boot_acc.median <- apply(bs_indices[1:37,], 2, function(ind) {
     tmp <- pred[match(gold$participant, pred$participant), ]
     suppressWarnings(accuracy_vec(gold[[colname]][ind], tmp[[colname]][ind]))
 }) %>% median(na.rm = TRUE)
-boot_sens <- apply(bs_indices[1:37,], 2, function(ind) {
+boot_sens.median <- apply(bs_indices[1:37,], 2, function(ind) {
     tmp <- pred[match(gold$participant, pred$participant), ]
     suppressWarnings(sens_vec(gold[[colname]][ind], tmp[[colname]][ind]))
 }) %>% median(na.rm = TRUE)
-boot_spec <- apply(bs_indices[1:37,], 2, function(ind) {
+boot_spec.median <- apply(bs_indices[1:37,], 2, function(ind) {
     tmp <- pred[match(gold$participant, pred$participant), ]
     suppressWarnings(spec_vec(gold[[colname]][ind], tmp[[colname]][ind]))
 }) %>% median(na.rm = TRUE)
 
 bs_scores <- list(
-    "boot_auc_roc" = boot_auc_roc,
-    "boot_auprc" = boot_aupr,
-    "boot_accuracy" = boot_acc,
-    "boot_sensitivity" = boot_sens,
-    "boot_specificity" = boot_spec,
+    "boot_auc_roc" = boot_auc_roc %>% median(na.rm = TRUE),
+    "boot_auc_roc_sd" = boot_auc_roc %>% sd(na.rm = TRUE),
+    "boot_auc_roc_iqr" = boot_auc_roc %>% IQR(na.rm = TRUE),
+    "boot_auprc" = boot_aupr %>% median(na.rm = TRUE),
+    "boot_auprc_sd" = boot_aupr %>% sd(na.rm = TRUE),
+    "boot_auprc_iqr" = boot_auc_roc %>% IQR(na.rm = TRUE),
+    "boot_accuracy" = boot_acc.median,
+    "boot_sensitivity" = boot_sens.median,
+    "boot_specificity" = boot_spec.median,
     "submission_status" = "SCORED"
 )
 export_json <- toJSON(bs_scores, auto_unbox = TRUE, pretty=T)
