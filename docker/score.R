@@ -9,7 +9,7 @@ option_list <- list(
     make_option(c('-p', '--predictions_file'),  type = "character"),
     make_option(c('-g', '--goldstandard_file'),  type = "character"),
     make_option(c('-o', '--output'),  type = "character", default="results.json"),
-    make_option(c('-t', '--task'),  type = "character", default="1"),
+    make_option(c('-t', '--task'),  type = "character", default="1")
 )
 args <- parse_args(OptionParser(option_list=option_list))
 
