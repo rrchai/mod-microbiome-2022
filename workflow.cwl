@@ -156,11 +156,11 @@ steps:
       - id: docker_authentication
         source: "#get_docker_config/docker_authentication"
       - id: parentid
-        source: "#submitterUploadSynId"
+        source: "#adminUploadSynId"
       - id: synapse_config
         source: "#synapseConfig"
       - id: store
-        default: false
+        default: true
       - id: task_number
         source: "#determine_question/task_number"
       - id: docker_script
