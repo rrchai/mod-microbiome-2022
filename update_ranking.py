@@ -3,8 +3,7 @@
 This script will rank submissions made to the Preterm Birth Prediction -
 Microbiome Challenge (syn26133770) according to AUC-ROC and AUPRC.
 """
-import os
-import getpass
+import argparse
 
 from challengeutils.annotations import update_submission_status
 from challengeutils.utils import update_single_submission_status
@@ -16,18 +15,12 @@ SUBMISSION_VIEWS = {
 }
 
 
-def login():
-    """Log into Synapse. If env variables not found, prompt user."""
-    try:
-        syn = synapseclient.login(authToken=os.getenv('SYNAPSE_AUTH_TOKEN'),
-                                  silent=True)
-    except synapseclient.core.exceptions.SynapseNoCredentialsError:
-        print("Credentials not found; please manually provide your",
-              "Synapse username and password.")
-        username = input("Synapse username: ")
-        password = getpass.getpass("Synapse password: ")
-        syn = synapseclient.login(username, password, silent=True)
-    return syn
+def get_args():
+    """Set up command-line interface and get arguments."""
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--username", type=str, required=True)
+    parser.add_argument("--password", type=str, required=True)
+    return parser.parse_args()
 
 
 def rank_submissions(syn, subview_id):
@@ -61,7 +54,9 @@ def annotate_submissions(syn, sub_df):
 
 def main():
     """Main function."""
-    syn = login()
+    args = get_args()
+    syn = synapseclient.Synapse()
+    syn.login(email=args.username, password=args.password, silent=True)
 
     for task, syn_id in SUBMISSION_VIEWS.items():
         ranked_subs = rank_submissions(syn, syn_id)
