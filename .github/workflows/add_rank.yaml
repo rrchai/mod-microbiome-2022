@@ -21,4 +21,4 @@ jobs:
         pip install synapseclient challengeutils
     - name: Add rank
       run: |
-        python update_ranking.py --username ${{ secrets.SYN_USERNAME }} --password ${{ secrets.SYN_PASSWORD }}
+        python update_ranking.py
