@@ -3,8 +3,6 @@
 This script will rank submissions made to the Preterm Birth Prediction -
 Microbiome Challenge (syn26133770) according to AUC-ROC and AUPRC.
 """
-import argparse
-
 from challengeutils.annotations import update_submission_status
 from challengeutils.utils import update_single_submission_status
 import synapseclient
