@@ -15,14 +15,6 @@ SUBMISSION_VIEWS = {
 }
 
 
-def get_args():
-    """Set up command-line interface and get arguments."""
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--username", type=str, required=True)
-    parser.add_argument("--password", type=str, required=True)
-    return parser.parse_args()
-
-
 def rank_submissions(syn, subview_id):
     """
     Get scored submissions and rank them according to AUC-ROC, followed
@@ -54,9 +46,8 @@ def annotate_submissions(syn, sub_df):
 
 def main():
     """Main function."""
-    args = get_args()
     syn = synapseclient.Synapse()
-    syn.login(email=args.username, password=args.password, silent=True)
+    syn.login(silent=True)
 
     for task, syn_id in SUBMISSION_VIEWS.items():
         ranked_subs = rank_submissions(syn, syn_id)
