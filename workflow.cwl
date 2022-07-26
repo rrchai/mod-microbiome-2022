@@ -169,6 +169,52 @@ steps:
           location: "run_docker.py"
     out:
       - id: predictions
+      - id: results
+      - id: status
+      - id: invalid_reasons
+
+  email_docker:
+    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.2/cwl/validate_email.cwl
+    in:
+      - id: submissionid
+        source: "#submissionId"
+      - id: synapse_config
+        source: "#synapseConfig"
+      - id: status
+        source: "#run_docker/status"
+      - id: invalid_reasons
+        source: "#run_docker/invalid_reasons"
+      - id: errors_only
+        default: false
+    out: [finished]
+
+  annotate_docker_run_results:
+    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.2/cwl/annotate_submission.cwl
+    in:
+      - id: submissionid
+        source: "#submissionId"
+      - id: annotation_values
+        source: "#run_docker/results"
+      - id: to_public
+        default: true
+      - id: force
+        default: true
+      - id: synapse_config
+        source: "#synapseConfig"
+      - id: previous_annotation_finished
+        source: "#annotate_docker_validation_with_output/finished"
+    out: [finished]
+
+  check_docker_run_status:
+    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.2/cwl/check_status.cwl
+    in:
+      - id: status
+        source: "#run_docker/status"
+      - id: previous_annotation_finished
+        source: "#annotate_docker_run_results/finished"
+      - id: previous_email_finished
+        source: "#email_docker/finished"
+    out: [finished]
 
   upload_results:
     run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.1/cwl/upload_to_synapse.cwl
@@ -202,7 +248,7 @@ steps:
       - id: synapse_config
         source: "#synapseConfig"
       - id: previous_annotation_finished
-        source: "#annotate_docker_validation_with_output/finished"
+        source: "#annotate_docker_run_results/finished"
     out: [finished]
 
   get_goldstandard_id:

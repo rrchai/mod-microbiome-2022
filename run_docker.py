@@ -4,6 +4,7 @@ import argparse
 import os
 import tarfile
 import time
+import json
 
 import synapseclient
 import docker
@@ -166,13 +167,20 @@ def main(syn, args):
 
     # Check for prediction files once the Docker run is complete.
     output_folder = os.listdir(output_dir)
-    if not output_folder:
+    if not output_folder or "predictions.csv" not in output_folder:
+        status = "INVALID"
+        errors = ("Error encountered while running the Docker container; contact "
+                  "the Challenge Organizers in the Discussion Board for more help.")
         raise Exception("No 'predictions.csv' file written to /output, "
                         "please check inference docker")
-    elif "predictions.csv" not in output_folder:
-
-        raise Exception("No 'predictions.csv' file written to /output, "
-                        "please check inference docker")
+    else:
+        status = "VALIDATED"
+        errors = ""
+    with open("results.json", "w") as out:
+        out.write(json.dumps({
+            'submission_status': status,
+            'submission_errors': errors
+        }))
 
 
 if __name__ == '__main__':
