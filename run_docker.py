@@ -171,8 +171,6 @@ def main(syn, args):
         status = "INVALID"
         errors = ("Error encountered while running the Docker container; contact "
                   "the Challenge Organizers in the Discussion Board for more help.")
-        raise Exception("No 'predictions.csv' file written to /output, "
-                        "please check inference docker")
     else:
         status = "VALIDATED"
         errors = ""
