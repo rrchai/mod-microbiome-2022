@@ -185,7 +185,7 @@ steps:
       - id: invalid_reasons
         source: "#run_docker/invalid_reasons"
       - id: errors_only
-        default: false
+        default: true
     out: [finished]
 
   annotate_docker_run_results:
