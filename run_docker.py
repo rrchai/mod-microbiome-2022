@@ -169,8 +169,8 @@ def main(syn, args):
     output_folder = os.listdir(output_dir)
     if not output_folder or "predictions.csv" not in output_folder:
         status = "INVALID"
-        errors = ("Error encountered while running the Docker container; contact "
-                  "the Challenge Organizers in the Discussion Board for more help.")
+        errors = ("Error encountered while running your Docker container; contact "
+                  "the Challenge Organizers in the Discussion Board for more info.")
     else:
         status = "VALIDATED"
         errors = ""
