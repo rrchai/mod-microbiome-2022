@@ -13,13 +13,13 @@ option_list <- list(
 )
 args <- parse_args(OptionParser(option_list=option_list))
 
-# Read in files and ensure participant order matches between the files.
-gold <- read_csv(args$goldstandard_file, col_types=cols("c", "f", "d"))
-pred <- read_csv(args$predictions_file, col_types=cols("c", "f"))
-pred <- pred[match(gold$participant, pred$participant), ]
-
 # Set colname depending on task number.
 colname <- ifelse(args$task == "1", "was_preterm", "was_early_preterm")
+
+# Read in files and ensure participant order matches between the files.
+gold <- read_csv(args$goldstandard_file, col_types=cols("c", "f", "d"))
+pred <- read_csv(args$predictions_file, show_col_types=FALSE)
+pred <- pred[match(gold$participant, pred$participant), ]
 
 # Set factor levels (otherwise, they will be mismatched).
 gold[[colname]] <- factor(gold[[colname]], levels=c(1,0))
