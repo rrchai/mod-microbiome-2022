@@ -9,6 +9,7 @@ option_list <- list(
     make_option(c('-p', '--predictions_file'),  type = "character"),
     make_option(c('-g', '--goldstandard_file'),  type = "character"),
     make_option(c('-o', '--output'),  type = "character", default="results.json"),
+    make_option(c('-r', '--real_scores'),  type = "character", default="true_results.json"),
     make_option(c('-t', '--task'),  type = "character", default="1")
 )
 args <- parse_args(OptionParser(option_list=option_list))
@@ -35,7 +36,7 @@ true_scores <- list(
     "mcc" = mcc_vec(gold[[colname]], pred[[colname]])
 )
 export_json <- toJSON(true_scores, auto_unbox = TRUE, pretty=T)
-write(export_json, "true_results.json")
+write(export_json, args$real_scores)
 
 # Calculate bootstrapped scores, using a fixed seed value.
 set.seed(7192022)
