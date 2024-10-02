@@ -18,9 +18,9 @@ outputs:
 expression: |
 
   ${
-    if(inputs.queue == "9614880" || inputs.queue == "9615050"){
+    if(inputs.queue == "9615724" || inputs.queue == "9615726"){
       return {task_number: "1"};
-    } else if (inputs.queue == "9615049" || inputs.queue == "9615051") {
+    } else if (inputs.queue == "9615725" || inputs.queue == "9615727") {
       return {task_number: "2"};
     } else {
       throw 'invalid queue';
